@@ -8,7 +8,7 @@ GameState :: struct {
 }
 Map :: struct {
     tiles: [dynamic][dynamic]TileInfo,
-    data: [dynamic]byte,
+    stack: Stack,
 }
 TileInfo :: struct {
     type: TileType,

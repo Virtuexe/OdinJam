@@ -27,3 +27,15 @@ append_array :: proc(array: ^[dynamic]$T, args: [$size]T) {
         append(array, arg)
     }
 }
+
+Stack :: [dynamic]byte
+stack_push :: proc(stack: ^Stack, arg: $T) -> (arg_pointer: int) {
+    arg := arg
+    for arg_byte in (cast(^[size_of(T)]byte)&arg)^ {
+        append(stack, arg_byte)
+    }
+    return len(stack^) - size_of(T)
+}
+stack_peek_at :: proc(stack: ^Stack, pointer: int, $type: typeid) -> ^type {
+    return cast(^type)&stack[pointer]
+}

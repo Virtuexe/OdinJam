@@ -13,19 +13,22 @@ read_map :: proc() {
         tile_index := 0
         for c in room {
             if expecting_identifier {
-                if _, ok := unhandled_doors[c]; ok {
-                    game_state.map_.tiles[unhandled_doors[c].room_index][unhandled_doors[c].tile_index].data_pointer = len(game_state.map_.tiles)
-                    append_array(&game_state.map_.data, transmute([size_of(DoorData)]byte)DoorData{room_index, tile_index})
-                    game_state.map_.tiles[room_index][tile_index].data_pointer = len(game_state.map_.data)
-                    append_array(&game_state.map_.data, transmute([size_of(DoorData)]byte)DoorData{unhandled_doors[c].room_index, unhandled_doors[c].tile_index})
+                if unhandled_door, ok := unhandled_doors[c]; ok {
+                    unhandled_door_tile := &game_state.map_.tiles[unhandled_door.room_index][unhandled_door.tile_index]
+                    current_door_tile := &game_state.map_.tiles[room_index][tile_index]
+
+                    unhandled_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{room_index, tile_index})
+                    current_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{unhandled_door.room_index, unhandled_door.tile_index})
                 }
+                unhandled_doors[c] = {room_index, tile_index}
                 expecting_identifier = false
+                tile_index += 1
                 continue
             }
-            tile_index += 1
             switch c {
                 case tile_symbols[.Empty]:
                     append(last(game_state.map_.tiles[:]), TileInfo{.Empty, nil})
+                    tile_index += 1
                 case tile_symbols[.Door]:
                     append(last(game_state.map_.tiles[:]), TileInfo{.Door, nil})
                     expecting_identifier = true
@@ -34,15 +37,19 @@ read_map :: proc() {
             }
         }
     }
-
-    for room in game_state.map_.tiles {
-        fmt.print("room:")
-        for tile in room {
-            fmt.print(tile_symbols[tile.type])
-            if (tile.type == .Door) {
-                //fmt.print((cast(^DoorData)&game_state.map_.data[tile.data_pointer.(int)])^)
-            }
-        }
-        fmt.print('\n')
-    }
+    // for room in game_state.map_.tiles {
+    //     fmt.print("room:")
+    //     for tile in room {
+    //         fmt.print(tile_symbols[tile.type])
+    //         if (tile.type == .Door) {
+    //             if (tile.data_pointer != nil) {
+    //                 fmt.print((stack_peek_at(&game_state.map_.stack, tile.data_pointer.(int), DoorData))^)
+    //             }
+    //             else {
+    //                 fmt.print('X')
+    //             }
+    //         }
+    //     }
+    //     fmt.print('\n')
+    // }
 }
