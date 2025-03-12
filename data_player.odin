@@ -1,4 +1,4 @@
-package data
+package game
 import rl "vendor:raylib"
 
 PlayerInfo :: struct {

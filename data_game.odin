@@ -1,4 +1,4 @@
-package data
+package game
 import rl "vendor:raylib"
 
 GameState :: struct {
@@ -18,7 +18,7 @@ TileType :: enum {
     Empty,
     Door,
 }
-TILE_SYMBOL :: [TileType]rune {
+tile_symbols := [TileType]rune {
     .Empty = '-',
     .Door = 'D'
 }

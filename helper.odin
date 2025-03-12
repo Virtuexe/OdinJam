@@ -1,4 +1,4 @@
-package general
+package game
 import rl "vendor:raylib"
 import "core:math"
 
