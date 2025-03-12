@@ -4,7 +4,7 @@ import fmt "core:fmt"
 import "core:math"
 
 PLAYER_SIZE :: rl.Vector2{128,128}
-
+PLAYER_TEXTURE_SIZE :: [2]i32{64,64}
 player_texture: [PlayerAnimation]rl.Texture2D = {}
 player_texture_slide_count: [PlayerAnimation]int = {
     .Idle = 6,
@@ -14,11 +14,16 @@ player_texture_next_slide_on_progress: [PlayerAnimation]f32 = {
     .Idle = 20,
     .Run = 300,
 }
-player_texture_size : rl.Vector2 = {64,64}
+
+ROOM_TEXTURE_SIZE :: [2]i32{32,32}
+room_texture: [TileType]rl.Texture2D = {}
 
 render_init :: proc() {
     player_texture[.Idle] = rl.LoadTexture("assets/Idle/Thin.png")
     player_texture[.Run] = rl.LoadTexture("assets/Run/Run.png")
+
+    room_texture[.Empty] = rl.LoadTexture("assets/Wall.png")
+    room_texture[.Door] = rl.LoadTexture("assets/Door.png")
 }
 render_iter :: proc() {
     rl.BeginDrawing()
@@ -28,13 +33,8 @@ render_iter :: proc() {
     draw_room()
     draw_player()
 }
-draw_room :: proc() {
-    for tile in game_state.map_.tiles[game_state.room_index] {
-        
-    }
-}
 draw_player :: proc() {
-    texture_size := player_texture_size
+    texture_size := PLAYER_TEXTURE_SIZE
     texture_flip_mult:f32 = 1
     if game_state.player_info.direction == .Left {
         texture_flip_mult = -1
@@ -46,7 +46,7 @@ draw_player :: proc() {
     ani_slide_count := player_texture_slide_count[ani]
     slide := int(ani_progress / ani_next_slide_on_progress) % ani_slide_count
 
-    texture_rectangle := rl.Rectangle{texture_size.x * f32(slide), 0, texture_flip_mult * texture_size.x, texture_size.y}
+    texture_rectangle := rl.Rectangle{f32(texture_size.x) * f32(slide), 0, texture_flip_mult * f32(texture_size.x), f32(texture_size.y)}
 
     dest_rectangle := rl.Rectangle{
         f32(rl.GetScreenWidth()) / 2 + game_state.player_info.position.x,

@@ -8,6 +8,7 @@ game_state := GameState{}
 
 game_init :: proc() {
     rl.SetConfigFlags(rl.ConfigFlags{rl.ConfigFlag.WINDOW_RESIZABLE});
+    rl.SetTraceLogLevel(.NONE)
     rl.InitWindow(default_window_size.x,default_window_size.y,"Game");
     rl.SetTargetFPS(60)
     gameplay_init()
