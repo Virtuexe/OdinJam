@@ -23,5 +23,9 @@ Enemy :: struct {
     last_player_position: rl.Vector2,
     targeted_tile_door: Maybe(int),
     door_used: bool,
-    player_info: PlayerInfo
+    player_info: PlayerInfo,
+    explore_door_chance: [dynamic][dynamic]DoorChance,
+}
+DoorChance :: struct {
+    tile_index,chance:int
 }

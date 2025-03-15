@@ -23,7 +23,6 @@ player_input :: proc(left:bool, right:bool, up:bool, use:bool, player_info: ^Pla
     }
 
     dt := rl.GetFrameTime()
-
     player_info.velocity.x = clamp(player_info.velocity.x, -player_move_speed, player_move_speed)
     player_info.position.x += player_info.velocity.x * dt
     if player_info.velocity.x != 0 {
@@ -48,7 +47,7 @@ player_input :: proc(left:bool, right:bool, up:bool, use:bool, player_info: ^Pla
         player_info.animation_progress += dt
     }
     
-    room_width: f32 = ROOM_SIZE.x * f32(len(map_.tiles[game_state.room_index]))
+    room_width: f32 = ROOM_SIZE.x * f32(len(map_.tiles[player_info.room_index]))
     min_x := -room_width / 2 + PLAYER_SIZE.x / 4
     max_x := room_width / 2 - PLAYER_SIZE.x / 4
 

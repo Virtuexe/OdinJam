@@ -3,7 +3,7 @@ import rl "vendor:raylib"
 import st "core:strings"
 import fmt "core:fmt"
 
-MAP_EDITOR :: []string{"-D1-----D2-","-D1---D2-"}
+MAP_EDITOR :: []string{"-D1--D3---D2D4","-D1---D2-","D3--D4"}
 
 DoorData :: struct {
     room_index: int,
@@ -19,6 +19,7 @@ read_map :: proc() {
         append(&game_state.map_.tiles, [dynamic]TileInfo{})
         expecting_identifier := false
         tile_index := 0
+        append(&enemy.explore_door_chance, [dynamic]DoorChance{})
         for c in room {
             if expecting_identifier {
                 if unhandled_door, ok := unhandled_doors[c]; ok {
@@ -40,6 +41,7 @@ read_map :: proc() {
                 case tile_symbols[.Door]:
                     append(last(game_state.map_.tiles[:]), TileInfo{.Door, nil})
                     expecting_identifier = true
+                    append(&enemy.explore_door_chance[room_index], DoorChance{tile_index, 0})
                 case:
                     assert(true, "Invalid symbol.")
             }

@@ -10,6 +10,9 @@ gameplay_init :: proc() {
     enemy_info.room_index = len(map_.tiles) - 1
 }
 gameplay_iter :: proc() {
+    if game_state.game_over {
+        return
+    }
     #reverse for room_tile_index, i in map_.doors_need_handle {
         door_data := stack_peek_at(&map_.stack, map_.tiles[room_tile_index[0]][room_tile_index[1]].data_pointer.(int), DoorData)
         door_data.animation_frame += rl.GetFrameTime()

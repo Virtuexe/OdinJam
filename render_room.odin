@@ -70,13 +70,18 @@ draw_room :: proc() {
             rectangle = {f32(ROOM_TEXTURE_SIZE.x * room_tiles_slide[tile.type]),0,f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
         }
 
+        color := rl.WHITE
+        if game_state.game_over {
+            color = rl.RED
+        }
+
         rl.DrawTexturePro(
             texture,
             rectangle,
             {x, y, scaled_tile_width, scaled_tile_height},
             {0, 0},
             0,
-            rl.WHITE
+            color
         )
     }
 }

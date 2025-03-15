@@ -6,6 +6,8 @@ GameState :: struct {
     enemy: Enemy,
     room_index: int,
     map_: Map,
+    game_over: bool,
+    score: f32,
 }
 Map :: struct {
     tiles: [dynamic][dynamic]TileInfo,
