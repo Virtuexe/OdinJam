@@ -105,6 +105,7 @@ player_room_interact :: proc(player_info: ^PlayerInfo, is_player: bool, up: bool
 player_door_open :: proc(player_info: ^PlayerInfo, room_index, tile_index: int) {
     tile := &map_.tiles[room_index][tile_index]
     door_data := stack_peek_at(&map_.stack, tile.data_pointer.(int), DoorData)
+    door_data2 := stack_peek_at(&map_.stack, map_.tiles[door_data.room_index][door_data.tile_index].data_pointer.(int), DoorData)
 
     if door_data.animation_in_progress {
         return
@@ -113,8 +114,11 @@ player_door_open :: proc(player_info: ^PlayerInfo, room_index, tile_index: int) 
     rl.PlaySound(room_door_open_sound)
 
     door_data.animation_in_progress = true
+    door_data2.animation_in_progress = true
     door_data.is_open = !door_data.is_open
+    door_data2.is_open = !door_data2.is_open
     append(&map_.doors_need_handle, [2]int{room_index,tile_index})
+    append(&map_.doors_need_handle, [2]int{door_data.room_index,door_data.tile_index})
 }
 player_door_enter :: proc(player_info: ^PlayerInfo, is_player: bool, tile: ^TileInfo) {
     if tile.type != .Door {
@@ -137,9 +141,10 @@ player_door_enter :: proc(player_info: ^PlayerInfo, is_player: bool, tile: ^Tile
 }
 player_get_tile :: proc(player_info: ^PlayerInfo, center: bool) -> (room: ^[dynamic]TileInfo, tile: ^TileInfo) {
     room_index, tile_index := player_get_tile_index(player_info, center)
-    return &map_.tiles[room_index], &room[tile_index]
+    return &map_.tiles[room_index], &map_.tiles[room_index][tile_index]
 }
 player_get_tile_index :: proc(player_info: ^PlayerInfo, center: bool) -> (room_index: int, tile_index: int) {
+    room_index = player_info.room_index
     room := &map_.tiles[player_info.room_index]
     center_tile := (len(room) + 1) / 2
     tile_offset := ROOM_SIZE.x/2
@@ -154,8 +159,6 @@ player_get_tile_index :: proc(player_info: ^PlayerInfo, center: bool) -> (room_i
         }
     }
     tile_offset *=  tile_offset_modifier
-
-    room_index = player_info.room_index
     tile_index = int(f32(center_tile) + (player_info.position.x - tile_offset) / ROOM_SIZE.x)
     tile_index = min(max(0, tile_index), len(room) - 1)
     return

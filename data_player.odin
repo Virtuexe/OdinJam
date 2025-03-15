@@ -18,3 +18,10 @@ Direction :: enum {
     Right,
     Left,
 }
+
+Enemy :: struct {
+    last_player_position: rl.Vector2,
+    targeted_tile_door: Maybe(int),
+    door_used: bool,
+    player_info: PlayerInfo
+}

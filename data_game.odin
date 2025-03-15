@@ -3,7 +3,7 @@ import rl "vendor:raylib"
 
 GameState :: struct {
     player_info: PlayerInfo,
-    enemy_info: PlayerInfo,
+    enemy: Enemy,
     room_index: int,
     map_: Map,
 }

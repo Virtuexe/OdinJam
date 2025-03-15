@@ -10,13 +10,13 @@ gameplay_init :: proc() {
     enemy_info.room_index = len(map_.tiles) - 1
 }
 gameplay_iter :: proc() {
-    for room_tile_index, i in map_.doors_need_handle {
+    #reverse for room_tile_index, i in map_.doors_need_handle {
         door_data := stack_peek_at(&map_.stack, map_.tiles[room_tile_index[0]][room_tile_index[1]].data_pointer.(int), DoorData)
         door_data.animation_frame += rl.GetFrameTime()
         if door_data.animation_frame >= room_door_texture_next_slide_on_progress * f32(room_door_texture_slide_count) {
             door_data.animation_frame = 0
             door_data.animation_in_progress = false
-            unordered_remove(&map_.doors_need_handle, i)
+            ordered_remove(&map_.doors_need_handle, i)
         }
     }
 

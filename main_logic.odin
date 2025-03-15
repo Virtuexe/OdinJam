@@ -8,7 +8,8 @@ default_window_size :: [2]i32{512,512}
 game_state := GameState{}
 map_ := &game_state.map_
 player_info := &game_state.player_info
-enemy_info := &game_state.enemy_info
+enemy_info := &game_state.enemy.player_info
+enemy := &game_state.enemy
 
 game_init :: proc() {
     rl.SetConfigFlags(rl.ConfigFlags{rl.ConfigFlag.WINDOW_RESIZABLE});

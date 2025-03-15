@@ -3,7 +3,7 @@ import rl "vendor:raylib"
 import st "core:strings"
 import fmt "core:fmt"
 
-MAP_EDITOR :: []string{"-D1-------","-D1-----"}
+MAP_EDITOR :: []string{"-D1-----D2-","-D1---D2-"}
 
 DoorData :: struct {
     room_index: int,
@@ -45,4 +45,8 @@ read_map :: proc() {
             }
         }
     }
+}
+
+get_tile_position :: proc(room_index: int, tile_index: int) -> f32 {
+    return (f32(tile_index) - f32(len(map_.tiles[room_index]))/2) * ROOM_SIZE.x + ROOM_SIZE.x/2
 }
