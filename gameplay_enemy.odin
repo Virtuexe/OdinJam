@@ -10,9 +10,8 @@ gameplay_enemy_get_keys :: proc() -> (left: bool, right: bool, up: bool, use: bo
     }
 
     if does_enemy_see_player() {
-        // left, right = enemy_move_towards_player()
-        // enemy.targeted_tile_door = nil
-        left, right, up, use = enemy_move_towards_door()
+        left, right = enemy_move_towards_player()
+        enemy.targeted_tile_door = nil
     }
     else {
         left, right, up, use = enemy_move_towards_door()

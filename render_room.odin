@@ -25,10 +25,20 @@ room_door_texture_slide_count: i32 = 4
 room_door_texture_next_slide_on_progress: f32 = 0.3
 
 render_room_init :: proc() {
-    room_tiles_texture = rl.LoadTexture("assets/Room/tiles.png")
-    room_door_open_texture = rl.LoadTexture("assets/Room/door_opening.png")
+    // Load room textures from memory
+    room_tiles_image := rl.LoadImageFromMemory(".png", raw_data(room_tiles_data), i32(len(room_tiles_data)))
+    room_door_image := rl.LoadImageFromMemory(".png", raw_data(room_door_open_data), i32(len(room_door_open_data)))
     
-    room_door_open_sound = rl.LoadSound("assets/Room/door_opening.mp3")
+    room_tiles_texture = rl.LoadTextureFromImage(room_tiles_image)
+    room_door_open_texture = rl.LoadTextureFromImage(room_door_image)
+    
+    rl.UnloadImage(room_tiles_image)
+    rl.UnloadImage(room_door_image)
+    
+    // Load door sound from memory
+    door_wave := rl.LoadWaveFromMemory(".mp3", raw_data(room_door_sound_data), i32(len(room_door_sound_data)))
+    room_door_open_sound = rl.LoadSoundFromWave(door_wave)
+    rl.UnloadWave(door_wave)
 }
 draw_room :: proc() {
     tiles := game_state.map_.tiles[game_state.room_index]

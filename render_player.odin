@@ -2,6 +2,7 @@ package game
 import rl "vendor:raylib"
 import fmt "core:fmt"
 
+
 PLAYER_TEXTURE_SIZE :: [2]f32{16,16}
 PLAYER_SIZE :: [2]f32{16,16}
 player_texture: [PlayerAnimation]rl.Texture2D = {}
@@ -29,19 +30,42 @@ enemy_texture_next_slide_on_progress: [PlayerAnimation]f32 = {
 }
 
 render_player_init :: proc() {
-    player_texture[.Idle] = rl.LoadTexture("assets/Player/Idle.png")
-    player_texture[.Run] = rl.LoadTexture("assets/PLayer/Run.png")
+    // Load player textures from memory
+    player_idle_image := rl.LoadImageFromMemory(".png", raw_data(player_idle_data), i32(len(player_idle_data)))
+    player_run_image := rl.LoadImageFromMemory(".png", raw_data(player_run_data), i32(len(player_run_data)))
+    
+    player_texture[.Idle] = rl.LoadTextureFromImage(player_idle_image)
+    player_texture[.Run] = rl.LoadTextureFromImage(player_run_image)
+    
+    rl.UnloadImage(player_idle_image)
+    rl.UnloadImage(player_run_image)
 
-    player_sound_step[0] = rl.LoadSound("assets/Player/Step1.wav")
-    player_sound_step[1] = rl.LoadSound("assets/Player/Step2.wav")
+    // Load player sounds from memory
+    wave1 := rl.LoadWaveFromMemory(".wav", raw_data(player_step1_data), i32(len(player_step1_data)))
+    wave2 := rl.LoadWaveFromMemory(".wav", raw_data(player_step2_data), i32(len(player_step2_data)))
+    
+    player_sound_step[0] = rl.LoadSoundFromWave(wave1)
+    player_sound_step[1] = rl.LoadSoundFromWave(wave2)
+    
+    rl.UnloadWave(wave1)
+    rl.UnloadWave(wave2)
+    
     rl.SetSoundVolume(player_sound_step[0], 0.2)
     rl.SetSoundVolume(player_sound_step[1], 0.2)
 
-    enemy_texture[.Idle] = rl.LoadTexture("assets/Monster/Idle.png")
-    enemy_texture[.Run] = rl.LoadTexture("assets/Monster/Walk.png")
+    // Load enemy textures from memory
+    enemy_idle_image := rl.LoadImageFromMemory(".png", raw_data(enemy_idle_data), i32(len(enemy_idle_data)))
+    enemy_walk_image := rl.LoadImageFromMemory(".png", raw_data(enemy_walk_data), i32(len(enemy_walk_data)))
+    
+    enemy_texture[.Idle] = rl.LoadTextureFromImage(enemy_idle_image)
+    enemy_texture[.Run] = rl.LoadTextureFromImage(enemy_walk_image)
+    
+    rl.UnloadImage(enemy_idle_image)
+    rl.UnloadImage(enemy_walk_image)
 
-    enemy_sound_step[0] = rl.LoadSound("assets/Player/Step1.wav")
-    enemy_sound_step[1] = rl.LoadSound("assets/Player/Step2.wav")
+    // Reuse player step sounds for enemy
+    enemy_sound_step[0] = player_sound_step[0]
+    enemy_sound_step[1] = player_sound_step[1]
     rl.SetSoundVolume(player_sound_step[0], 0.5)
     rl.SetSoundVolume(player_sound_step[1], 0.5)
 }

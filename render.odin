@@ -2,6 +2,22 @@ package game
 import rl "vendor:raylib"
 import fmt "core:fmt"
 import "core:math"
+import "core:strings"
+
+// Player assets
+player_idle_data := #load("assets/Player/Idle.png")
+player_run_data := #load("assets/PLayer/Run.png")
+player_step1_data := #load("assets/Player/Step1.wav")
+player_step2_data := #load("assets/Player/Step2.wav")
+
+// Enemy assets
+enemy_idle_data := #load("assets/Monster/Idle.png")
+enemy_walk_data := #load("assets/Monster/Walk.png")
+
+// Room assets
+room_tiles_data := #load("assets/Room/tiles.png")
+room_door_open_data := #load("assets/Room/door_opening.png")
+room_door_sound_data := #load("assets/Room/door_opening.mp3")
 
 render_init :: proc() {
     render_player_init()
@@ -61,6 +77,18 @@ draw_game_over :: proc() {
     // Draw text with shadow for better visibility
     rl.DrawText(text, text_x + 3, text_y + 3, font_size, rl.BLACK)  // Shadow
     rl.DrawText(text, text_x, text_y, font_size, rl.WHITE)           // Main text
+    
+    // Add score text
+    score_text := fmt.tprintf("Score: %d", int(game_state.score))
+    score_cstr := strings.clone_to_cstring(score_text)
+    defer delete(score_cstr)
+    
+    score_size :i32= 30
+    score_width := rl.MeasureText(score_cstr, score_size)
+    score_x := screen_width/2 - score_width/2
+    score_y := text_y - score_size - 10
+    
+    rl.DrawText(score_cstr, score_x, score_y, score_size, rl.WHITE)
     
     // Optional: Draw "Press any key to restart" text
     hint_text :cstring= "Press space to restart"

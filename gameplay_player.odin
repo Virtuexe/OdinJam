@@ -22,8 +22,13 @@ player_input :: proc(left:bool, right:bool, up:bool, use:bool, player_info: ^Pla
         player_slide(player_info)
     }
 
+    speed := player_move_speed
+    if !is_player {
+        speed += 2
+    }
+
     dt := rl.GetFrameTime()
-    player_info.velocity.x = clamp(player_info.velocity.x, -player_move_speed, player_move_speed)
+    player_info.velocity.x = clamp(player_info.velocity.x, -speed, speed)
     player_info.position.x += player_info.velocity.x * dt
     if player_info.velocity.x != 0 {
         player_animation_change(.Run, player_info)

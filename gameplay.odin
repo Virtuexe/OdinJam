@@ -11,6 +11,10 @@ gameplay_init :: proc() {
 }
 gameplay_iter :: proc() {
     if game_state.game_over {
+        if rl.IsKeyPressed(.SPACE) {
+            game_state = {}
+            gameplay_init()
+        }
         return
     }
     #reverse for room_tile_index, i in map_.doors_need_handle {
@@ -25,4 +29,6 @@ gameplay_iter :: proc() {
 
     player_input(rl.IsKeyDown(.A), rl.IsKeyDown(.D), rl.IsKeyPressed(.W), rl.IsKeyPressed(.SPACE), player_info, true)
     player_input(gameplay_enemy_get_keys(), enemy_info, false)
+
+    game_state.score += rl.GetFrameTime()
 }
