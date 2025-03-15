@@ -15,13 +15,20 @@ tile_symbols := [TileType]rune {
 ROOM_TEXTURE_SIZE :: [2]i32{16,48}
 ROOM_SIZE :: [2]f32{16,48}
 room_tiles_texture: rl.Texture2D = {}
+room_door_open_texture: rl.Texture2D = {}
+room_door_open_sound: rl.Sound = {}
 room_tiles_slide := [TileType]i32 {
     .Empty = 4,
-    .Door = 6,
+    .Door = -1,
 }
+room_door_texture_slide_count: i32 = 4
+room_door_texture_next_slide_on_progress: f32 = 0.3
 
 render_room_init :: proc() {
     room_tiles_texture = rl.LoadTexture("assets/Room/tiles.png")
+    room_door_open_texture = rl.LoadTexture("assets/Room/door_opening.png")
+    
+    room_door_open_sound = rl.LoadSound("assets/Room/door_opening.mp3")
 }
 draw_room :: proc() {
     tiles := game_state.map_.tiles[game_state.room_index]
@@ -35,9 +42,37 @@ draw_room :: proc() {
         x := start_x + f32(i) * scaled_tile_width
         y := f32(rl.GetScreenHeight()/2) - scaled_tile_height/2
 
+        texture: rl.Texture2D
+        rectangle: rl.Rectangle
+        if tile.type == .Door {
+            door_data := stack_peek_at(&map_.stack, tile.data_pointer.(int), DoorData)
+            if door_data.is_open {
+                if door_data.animation_in_progress {
+                    texture = room_door_open_texture 
+                    rectangle = {f32(i32(door_data.animation_frame / room_door_texture_next_slide_on_progress) % room_door_texture_slide_count) * f32(ROOM_TEXTURE_SIZE.x), 0, f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
+                } else {
+                    texture = room_tiles_texture
+                    rectangle = {f32(ROOM_TEXTURE_SIZE.x * 3),0,f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
+                }
+            }
+            else {
+                if door_data.animation_in_progress {
+                    texture = room_door_open_texture 
+                    rectangle = {f32(room_door_texture_slide_count) * f32(ROOM_TEXTURE_SIZE.x) - f32(i32(door_data.animation_frame / room_door_texture_next_slide_on_progress) % room_door_texture_slide_count) * f32(ROOM_TEXTURE_SIZE.x), 0, f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
+                } else {
+                    texture = room_tiles_texture
+                    rectangle = {f32(ROOM_TEXTURE_SIZE.x * 7),0,f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
+                }
+            }
+        }
+        else {
+            texture = room_tiles_texture
+            rectangle = {f32(ROOM_TEXTURE_SIZE.x * room_tiles_slide[tile.type]),0,f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)}
+        }
+
         rl.DrawTexturePro(
-            room_tiles_texture,
-            {f32(ROOM_TEXTURE_SIZE.x * room_tiles_slide[tile.type]),0,f32(ROOM_TEXTURE_SIZE.x),f32(ROOM_TEXTURE_SIZE.y)},
+            texture,
+            rectangle,
             {x, y, scaled_tile_width, scaled_tile_height},
             {0, 0},
             0,

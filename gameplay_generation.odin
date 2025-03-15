@@ -3,7 +3,15 @@ import rl "vendor:raylib"
 import st "core:strings"
 import fmt "core:fmt"
 
-MAP_EDITOR :: []string{"-D1--D2","--D1-","D2"}
+MAP_EDITOR :: []string{"-D1-------","-D1-----"}
+
+DoorData :: struct {
+    room_index: int,
+    tile_index: int,
+    is_open: bool,
+    animation_in_progress: bool,
+    animation_frame: f32,
+}
 
 read_map :: proc() {
     unhandled_doors: map[rune]DoorData
@@ -17,10 +25,10 @@ read_map :: proc() {
                     unhandled_door_tile := &game_state.map_.tiles[unhandled_door.room_index][unhandled_door.tile_index]
                     current_door_tile := &game_state.map_.tiles[room_index][tile_index]
 
-                    unhandled_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{room_index, tile_index})
-                    current_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{unhandled_door.room_index, unhandled_door.tile_index})
+                    unhandled_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{room_index, tile_index, false, false, 0})
+                    current_door_tile.data_pointer = stack_push(&game_state.map_.stack, DoorData{unhandled_door.room_index, unhandled_door.tile_index, false, false, 0})
                 }
-                unhandled_doors[c] = {room_index, tile_index}
+                unhandled_doors[c] = {room_index, tile_index, false, false, 0}
                 expecting_identifier = false
                 tile_index += 1
                 continue
@@ -37,20 +45,4 @@ read_map :: proc() {
             }
         }
     }
-    
-    // for room in game_state.map_.tiles {
-    //     fmt.print("room:")
-    //     for tile in room {
-    //         fmt.print(tile_symbols[tile.type])
-    //         if (tile.type == .Door) {
-    //             if (tile.data_pointer != nil) {
-    //                 fmt.print((stack_peek_at(&game_state.map_.stack, tile.data_pointer.(int), DoorData))^)
-    //             }
-    //             else {
-    //                 fmt.print('X')
-    //             }
-    //         }
-    //     }
-    //     fmt.print('\n')
-    // }
 }

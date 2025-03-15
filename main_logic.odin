@@ -1,5 +1,6 @@
 package game
 import rl "vendor:raylib"
+import "core:math/rand"
 
 
 default_window_size :: [2]i32{512,512}
@@ -7,6 +8,7 @@ default_window_size :: [2]i32{512,512}
 game_state := GameState{}
 map_ := &game_state.map_
 player_info := &game_state.player_info
+enemy_info := &game_state.enemy_info
 
 game_init :: proc() {
     rl.SetConfigFlags(rl.ConfigFlags{rl.ConfigFlag.WINDOW_RESIZABLE});
@@ -14,6 +16,7 @@ game_init :: proc() {
     rl.InitWindow(default_window_size.x,default_window_size.y,"Game");
     rl.SetTargetFPS(60)
     rl.InitAudioDevice()
+
     gameplay_init()
     render_init()
 }

@@ -13,7 +13,8 @@ render_iter :: proc() {
 
     rl.ClearBackground(rl.BLACK)
     draw_room()
-    draw_player()
+    draw_player(player_info, player_texture, PLAYER_TEXTURE_SIZE, PLAYER_SIZE, player_texture_next_slide_on_progress, player_texture_slide_count)
+    draw_player(enemy_info, enemy_texture, ENEMY_TEXTURE_SIZE, ENEMY_SIZE, enemy_texture_next_slide_on_progress, enemy_texture_slide_count)
 }
 
 player_animation_passed_slide :: proc(player_anim: PlayerAnimation, on_slide: []i32) -> bool {

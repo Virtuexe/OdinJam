@@ -16,9 +16,8 @@ apply_rotation :: proc(p: rl.Vector2, pivot: rl.Vector2, angle: f32) -> rl.Vecto
     return rl.Vector2{rotated_x + pivot.x, rotated_y + pivot.y}
 }
 last :: proc(slice: []$T) -> ^T {
-    // If the slice is empty, return zero-value of T (avoid out-of-bounds)
     if len(slice) == 0 {
-        return nil;   // zero-initialized T
+        return nil; 
     }
     return &slice[len(slice) - 1];
 }
@@ -38,4 +37,10 @@ stack_push :: proc(stack: ^Stack, arg: $T) -> (arg_pointer: int) {
 }
 stack_peek_at :: proc(stack: ^Stack, pointer: int, $type: typeid) -> ^type {
     return cast(^type)&stack[pointer]
+}
+stack_ordered_remove_at :: proc(stack: ^Stack, pointer: int, $type: typeid) {
+    #reverse for i in 0..<size_of(T) {
+        ordered_remove(stack, pointer + i)
+    }
+    return len(stack^) - size_of(T)
 }
