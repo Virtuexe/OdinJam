@@ -5,18 +5,24 @@ import fmt "core:fmt"
 PLAYER_TEXTURE_SIZE :: [2]f32{16,16}
 PLAYER_SIZE :: [2]f32{16,16}
 player_texture: [PlayerAnimation]rl.Texture2D = {}
+player_sound_step: [2]rl.Sound = {}
 player_texture_slide_count: [PlayerAnimation]int = {
-    .Idle = 6,
-    .Run = 9,
+    .Idle = 2,
+    .Run = 4,
 }
 player_texture_next_slide_on_progress: [PlayerAnimation]f32 = {
-    .Idle = 20,
-    .Run = 300,
+    .Idle = 0.5,
+    .Run = 5,
 }
 
 render_player_init :: proc() {
     player_texture[.Idle] = rl.LoadTexture("assets/Player/Idle.png")
     player_texture[.Run] = rl.LoadTexture("assets/PLayer/Run.png")
+
+    player_sound_step[0] = rl.LoadSound("assets/Player/Step1.wav")
+    player_sound_step[1] = rl.LoadSound("assets/Player/Step2.wav")
+    rl.SetSoundVolume(player_sound_step[0], 0.2)
+    rl.SetSoundVolume(player_sound_step[1], 0.2)
 }
 draw_player :: proc() {
     texture_size := PLAYER_TEXTURE_SIZE
@@ -34,8 +40,8 @@ draw_player :: proc() {
     texture_rectangle := rl.Rectangle{f32(texture_size.x) * f32(slide), 0, texture_flip_mult * f32(texture_size.x), f32(texture_size.y)}
 
     dest_rectangle := rl.Rectangle{
-        f32(rl.GetScreenWidth()) / 2 + game_state.player_info.position.x,
-        f32(rl.GetScreenHeight()) / 2 + game_state.player_info.position.y,
+        f32(rl.GetScreenWidth()) / 2 + game_state.player_info.position.x * render_get_scale_modifier(),
+        f32(rl.GetScreenHeight()) / 2 + game_state.player_info.position.y * render_get_scale_modifier(),
         PLAYER_SIZE.x * render_get_scale_modifier(),
         PLAYER_SIZE.y * render_get_scale_modifier()
     }
@@ -43,6 +49,4 @@ draw_player :: proc() {
     origin := PLAYER_SIZE * render_get_scale_modifier() / 2
 
     rl.DrawTexturePro(player_texture[game_state.player_info.animation], texture_rectangle, dest_rectangle, origin, 0, rl.WHITE)
-
-    rl.DrawRectangle(rl.GetScreenWidth() / 2 - 5, rl.GetScreenHeight() / 2 - 5, 10, 10, rl.BLUE)
 }

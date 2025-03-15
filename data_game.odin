@@ -14,14 +14,6 @@ TileInfo :: struct {
     type: TileType,
     data_pointer: Maybe(int),
 }
-TileType :: enum {
-    Empty,
-    Door,
-}
-tile_symbols := [TileType]rune {
-    .Empty = '-',
-    .Door = 'D'
-}
 DoorData :: struct {
     room_index: int,
     tile_index: int,

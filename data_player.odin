@@ -5,6 +5,7 @@ PlayerInfo :: struct {
     position: rl.Vector2,
     velocity: rl.Vector2,
     direction: Direction,
+    last_animation_progress: f32,
     animation_progress: f32,
     animation: PlayerAnimation,
 }

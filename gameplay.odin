@@ -3,11 +3,8 @@ import rl "vendor:raylib"
 import st "core:strings"
 import fmt "core:fmt"
 
-player_move_speed: f32 = 100
-player_move_acceleration: f32 = 600
-player_friction: f32 = 800
-
 gameplay_init :: proc() {
+    player_info.position = {0, ROOM_SIZE.y/7}
     read_map()
 }
 gameplay_iter :: proc() {

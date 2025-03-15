@@ -3,7 +3,7 @@ import rl "vendor:raylib"
 import st "core:strings"
 import fmt "core:fmt"
 
-MAP_EDITOR :: []string{"--D1","-D1"}
+MAP_EDITOR :: []string{"-D1--D2","--D1-","D2"}
 
 read_map :: proc() {
     unhandled_doors: map[rune]DoorData
@@ -37,6 +37,7 @@ read_map :: proc() {
             }
         }
     }
+    
     // for room in game_state.map_.tiles {
     //     fmt.print("room:")
     //     for tile in room {
